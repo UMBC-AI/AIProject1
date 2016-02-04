@@ -149,4 +149,8 @@ class SearchNode:
             yield x
 
     def __str__(self) -> str:
+        """
+        Override the string to make it printable
+        :return:
+        """
         return self.name+" children: "+str(self.linked_nodes())
