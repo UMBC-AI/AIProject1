@@ -42,6 +42,9 @@ def main():
     elif search_type == 'uniform':
         path = search.depth(start, end)
 
-    print_path(output_file, path)
+    if path:
+        print_path(output_file, path)
+    else:
+        print("No path returned")
 
 main()

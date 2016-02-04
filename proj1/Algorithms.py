@@ -1,94 +1,34 @@
 # TODO: header
 from SearchNode import SearchNode
 from typing import List
-from abc import ABCMeta, abstractmethod
-
-class SearchStructure:
-    __metaclass__ = ABCMeta
-
-    def __init__(self):
-        self.__history = {}
-        self.__visited = []
-
-    @property
-    def history(self):
-        return self.__history
-
-    @property
-    def visited(self):
-        return self.__visited
-
-    @abstractmethod
-    def push(self, node: SearchNode, placed_by: SearchNode = None) -> bool:
-        pass
-
-    @abstractmethod
-    def pop(self) -> SearchNode:
-        pass
-
-    @abstractmethod
-    def __len__(self):
-        return None
-
-    def placed_by(self, name: str) -> SearchNode:
-        node = self.history.get(name, None)
-        if node is None:
-            return None
-
-        return node[1]
-
-class SearchQueue(SearchStructure):
-    """
-    SearchQueue for breadth first search
-    """
-    def __init__(self):
-        """
-        Implement queue, history (placed_by) and already visited nodes
-        :return:
-        """
-        self.__queue = []
-        super().__init__()
-
-    def push(self, node: SearchNode, placed_by: SearchNode = None) -> bool:
-        """
-        Push node onto the queue
-        :param node:
-        :param placed_by:
-        :return:
-        """
-        if node.name in self.visited:
-            return False
-
-        self.__queue.append((node, placed_by))
-        self.visited.append(node.name)
-        return True
-
-    def pop(self) -> SearchNode:
-        ret = self.__queue.pop(0)
-        self.history[ret[0].name] = ret
-
-        return ret[0]
-
-    def __len__(self):
-        return len(self.__queue)
-
-class SearchStack:
-
-    def __init__(self):
-        self.__stack = []
-        self.__history = {}
-        self.__visited = []
+from SearchStructure import SearchQueue, SearchStack
 
 class SearchAlgo:
-
+    """
+    Search Algorithms - CMSC 471 - Proj1
+    """
     def __len__(self):
+        """
+        Size of the graph
+        :return:
+        """
         return len(self.__nodes)
 
     def __node_exist_or_create(self, node):
+        """
+        Create node if it doesn't exist in graph
+        :param node: node name
+        :return:
+        """
         if node not in self.__nodes:
             self.__nodes[node] = SearchNode(node)
 
     def __build_graph(self, lines):
+        """
+        Build the graph
+        :param lines: lines of data
+        :return:
+        """
         for line in lines:
             node, link, weight = line.rstrip('\n').split(' ')
 
@@ -98,29 +38,54 @@ class SearchAlgo:
             self.__nodes[node].add_link(self.__nodes[link], float(weight))
 
     def __init__(self, data):
+        """
+        Constructor that builds the graph out
+        :param data:
+        :return:
+        """
         self.__nodes = {}
         self.__build_graph(data)
 
     def breadth(self, start: str, end: str) -> List[SearchNode]:
+        """
+        Breadth First Search
+        :param start: Start node name
+        :param end: End node name
+        :return:
+        """
+        # Get start and end node
         start = self.__nodes[start]
         end = self.__nodes[end]
 
+        # Create queue
         queue = SearchQueue()
         queue.push(start, None)
 
-        # Breadth first
         found = None
+        # While there are nodes in the queue
         while len(queue) > 0:
+            # Remove from the top
             node = queue.pop()
+            # Is it the goal?
             if node.name == end.name:
                 found = node
                 break
 
+            # Get all nodes linked to this node
+            nodes = []
             for link in node.linked_nodes():
+                nodes.append(link)
+
+            # Make sure it's alphabetical
+            nodes.sort()
+
+            # Push nodes onto queue
+            for link in nodes:
                 queue.push(node[link][0], node)
 
         # Build path
         if found:
+            # Find path from last node
             path = [found]
             while True:
                 prev = queue.placed_by(path[0].name)
@@ -134,8 +99,16 @@ class SearchAlgo:
             return []
 
     def depth(self, start: str, end: str):
+        """
+        Depth first node
+        :param start: node name
+        :param end: node name
+        :return:
+        """
         start = self.__nodes[start]
         end = self.__nodes[end]
+
+        stack = SearchStack()
 
         # TODO:
 

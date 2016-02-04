@@ -1,6 +1,6 @@
 import unittest
 
-from Algorithms import SearchQueue
+from SearchStructure import SearchQueue
 from SearchNode import SearchNode
 
 
