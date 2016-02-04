@@ -3,6 +3,16 @@
 import sys
 from Algorithms import SearchAlgo
 
+def print_path(file, path):
+    fp = open(file, 'w')
+    if len(path) <= 0:
+        fp.write('')
+    else:
+        for node in path:
+            fp.write(node.name+'\n')
+
+    fp.close()
+
 
 def main():
     args = sys.argv[1:]
@@ -10,8 +20,19 @@ def main():
         print("Usage: Search.py <input> <output> <start> <end> <type>")
         return -1
 
-    search = SearchAlgo(args[0])
+    search = None
 
-    search.breadth(args[2], args[3])
+    with open(args[0]) as data:
+        search = SearchAlgo(data.readlines())
+
+    path = []
+    if args[4] == 'breadth':
+        path = search.breadth(args[2], args[3])
+    elif args[4] == 'depth':
+        path = search.depth(args[2], args[3])
+    elif args[4] == 'uniform':
+        path = search.depth(args[2], args[3])
+
+    print_path(args[1], path)
 
 main()
