@@ -47,6 +47,9 @@ class SearchQueue:
 
 class SearchAlgo:
 
+    def __len__(self):
+        return len(self.__nodes)
+
     def __node_exist_or_create(self, node):
         if node not in self.__nodes:
             self.__nodes[node] = SearchNode(node)
@@ -63,10 +66,8 @@ class SearchAlgo:
     def __init__(self, data):
         self.__nodes = {}
         self.__build_graph(data)
-        print("Graph built with:", len(self.__nodes), "nodes")
 
     def breadth(self, start: str, end: str) -> List[SearchNode]:
-        print("Breadth first search:", start, "->", end)
         start = self.__nodes[start]
         end = self.__nodes[end]
 
@@ -86,7 +87,7 @@ class SearchAlgo:
 
         # Build path
         if found:
-            path = [node]
+            path = [found]
             while True:
                 prev = queue.placed_by(path[0].name)
                 if prev:

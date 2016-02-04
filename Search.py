@@ -20,19 +20,28 @@ def main():
         print("Usage: Search.py <input> <output> <start> <end> <type>")
         return -1
 
+    input_file = args[0]
+    output_file = args[1]
+    start = args[2]
+    end = args[3]
+    search_type = args[4]
+
     search = None
 
-    with open(args[0]) as data:
+    with open(input_file) as data:
         search = SearchAlgo(data.readlines())
 
-    path = []
-    if args[4] == 'breadth':
-        path = search.breadth(args[2], args[3])
-    elif args[4] == 'depth':
-        path = search.depth(args[2], args[3])
-    elif args[4] == 'uniform':
-        path = search.depth(args[2], args[3])
+    print("Graph built with:", len(search), "nodes")
 
-    print_path(args[1], path)
+    path = []
+    if search_type == 'breadth':
+        print("Breadth first search:", start, "->", end)
+        path = search.breadth(start, end)
+    elif search_type == 'depth':
+        path = search.depth(start, end)
+    elif search_type == 'uniform':
+        path = search.depth(start, end)
+
+    print_path(output_file, path)
 
 main()
