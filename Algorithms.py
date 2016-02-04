@@ -1,8 +1,35 @@
 # TODO: header
 from SearchNode import SearchNode
 from typing import List
+from abc import ABCMeta, abstractmethod
 
-class SearchQueue:
+class SearchStructure:
+    __metaclass__ = ABCMeta
+
+    def __init__(self):
+        self._history = {}
+        self._visited = []
+
+    @abstractmethod
+    def push(self, node: SearchNode, placed_by: SearchNode = None) -> bool:
+        pass
+
+    @abstractmethod
+    def pop(self) -> SearchNode:
+        pass
+
+    @abstractmethod
+    def __len__(self):
+        return None
+
+    def placed_by(self, name: str) -> SearchNode:
+        node = self._history.get(name, None)
+        if node is None:
+            return None
+
+        return node[1]
+
+class SearchQueue(SearchStructure):
     """
     SearchQueue for breadth first search
     """
@@ -12,8 +39,7 @@ class SearchQueue:
         :return:
         """
         self.__queue = []
-        self.__history = {}
-        self.__visited = []
+        super().__init__()
 
     def push(self, node: SearchNode, placed_by: SearchNode = None) -> bool:
         """
@@ -22,19 +48,12 @@ class SearchQueue:
         :param placed_by:
         :return:
         """
-        if node.name in self.__visited:
+        if node.name in self._visited:
             return False
 
         self.__queue.append((node, placed_by))
-        self.__visited.append(node.name)
+        self._visited.append(node.name)
         return True
-
-    def placed_by(self, name: str) -> SearchNode:
-        node = self.__history.get(name, None)
-        if node is None:
-            return None
-
-        return node[1]
 
     def pop(self) -> SearchNode:
         ret = self.__queue.pop(0)
@@ -44,6 +63,13 @@ class SearchQueue:
 
     def __len__(self):
         return len(self.__queue)
+
+class SearchStack:
+
+    def __init__(self):
+        self.__stack = []
+        self.__history = {}
+        self.__visited = []
 
 class SearchAlgo:
 
