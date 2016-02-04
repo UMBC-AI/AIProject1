@@ -7,8 +7,16 @@ class SearchStructure:
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        self._history = {}
-        self._visited = []
+        self.__history = {}
+        self.__visited = []
+
+    @property
+    def history(self):
+        return self.__history
+
+    @property
+    def visited(self):
+        return self.__visited
 
     @abstractmethod
     def push(self, node: SearchNode, placed_by: SearchNode = None) -> bool:
@@ -23,7 +31,7 @@ class SearchStructure:
         return None
 
     def placed_by(self, name: str) -> SearchNode:
-        node = self._history.get(name, None)
+        node = self.history.get(name, None)
         if node is None:
             return None
 
@@ -48,16 +56,16 @@ class SearchQueue(SearchStructure):
         :param placed_by:
         :return:
         """
-        if node.name in self._visited:
+        if node.name in self.visited:
             return False
 
         self.__queue.append((node, placed_by))
-        self._visited.append(node.name)
+        self.visited.append(node.name)
         return True
 
     def pop(self) -> SearchNode:
         ret = self.__queue.pop(0)
-        self.__history[ret[0].name] = ret
+        self.history[ret[0].name] = ret
 
         return ret[0]
 
