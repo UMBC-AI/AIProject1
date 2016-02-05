@@ -2,3 +2,5 @@
 *.iml
 __pycache__/*
 out.txt
+*.txt
+!graph.txt

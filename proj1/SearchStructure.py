@@ -172,6 +172,9 @@ class SearchStack(SearchStructure):
 
 
 class SearchPriorityQueue(SearchStructure):
+    """
+    SearchPriorityQueue for uniform cost search
+    """
 
     def __init__(self):
         # Call parent
