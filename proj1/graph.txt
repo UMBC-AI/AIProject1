@@ -1,8 +1,8 @@
 A B 1
 B C 2
-C E 10
+C E 1
 E G 1
 A D 1
-D F 2
-D C 3
+D F 30
+D C 1
 F E 1

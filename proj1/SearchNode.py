@@ -1,4 +1,11 @@
-# TODO: HEADER
+"""
+SearchNode.py - Basic Node
+CMSC 471 - Spring 2016
+Author: Christopher Sidell (csidell1@umbc.edu)
+ID: JZ28610
+
+Node to be used in the search graph and structures
+"""
 
 
 class SearchNode:
@@ -44,7 +51,8 @@ class SearchNode:
         """
         cost = 0.0
 
-        if isinstance(path, list):
+        # If we're dealing with a list
+        if isinstance(path, list) and len(path) > 0:
             # list of strings
             if isinstance(path[0], str):
                 curr = start
@@ -153,4 +161,4 @@ class SearchNode:
         Override the string to make it printable
         :return:
         """
-        return self.name+" children: "+str(self.linked_nodes())
+        return self.name+' children: '+str(self.linked_nodes())
