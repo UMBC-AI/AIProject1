@@ -8,7 +8,7 @@
 
 
 #my search class
-from Search import search
+from newSearchClass import search
 import sys
 
 def main():
@@ -30,12 +30,7 @@ def main():
     endNode = argList[4]
     searchType = argList[5]
 
-    mySearches = search(inputFile, outputFile, startNode, endNode)
-
-#    depthSearch = dfs(inputFile, outputFile, startNode, endNode)
-
-#    uniformSearch = ucs(inputFile, outputFile, startNode, endNode)
-
+    mySearches = new(inputFile, outputFile, startNode, endNode)
 
     mySearches.ReadFile()
 
