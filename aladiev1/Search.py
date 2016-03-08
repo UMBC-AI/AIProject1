@@ -130,7 +130,7 @@ def UCS(edges, parents, start, end):
 # READS COMMAND LINE ARGUMENTS AND VALIDATES INPUT
 def ReadCommandLine():
 
-    NUM_ARGS = 5
+    NUM_ARGS = 6
 
     # checking for correct number of input arguments
     if ( len(sys.argv) != NUM_ARGS):
@@ -146,11 +146,11 @@ def ReadCommandLine():
         startNode  = (sys.argv[3])
         endNode    = (sys.argv[4])
         searchType = (sys.argv[5])
-
+    print(searchType)
     if ( searchType != ("BFS" or "DFS" or "UCS") ):
         print ("ERROR: INVALID SEARCH TYPE")
         print ("EXITING PROGRAM...")
-        exit()
+#        exit()
 
     return (inputFile, outputFile, startNode, endNode, searchType)
 

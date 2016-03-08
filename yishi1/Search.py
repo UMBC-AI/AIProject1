@@ -128,12 +128,12 @@ def output(mypath,outputname):
         outputfile.write("\n")
 
 def main ():
-        outputname=sys.argv[2]
-        start=sys.argv[3]
-        end=sys.argv[4]
-        stype=sys.argv[5]
-	filename=openfile()
-        mygraph,mygraph1=getgraph(filename)
-        mypath=searchtype(stype,mygraph,mygraph1,start,end)
-        output(mypath,outputname)
+    outputname=sys.argv[2]
+    start=sys.argv[3]
+    end=sys.argv[4]
+    stype=sys.argv[5]
+    filename=openfile()
+    mygraph,mygraph1=getgraph(filename)
+    mypath=searchtype(stype,mygraph,mygraph1,start,end)
+    output(mypath,outputname)
 main()
