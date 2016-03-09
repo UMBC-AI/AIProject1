@@ -13,8 +13,8 @@ def main():
     elif a == 'UCS':
         path = g.solveUCS()
 
-    outputFile = open(output,'w')
+    outputFile = open(output,'a')
     for i in range(len(path)-1,-1,-1):
-        outputFile.write((path[i]+" "))
+        outputFile.write((path[i]+"\n"))
 main()
     
