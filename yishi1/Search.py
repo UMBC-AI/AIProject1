@@ -62,17 +62,20 @@ def bfspath(mygraph,start,end):
 def dfspath(mygraph,start,end):
     #default stack
     stack = []
+    opand = []
     stack.append([start])
     while stack:
         #searth for the path
-        path=stack.pop()
+        path=stack.pop(0)
         node=path[-1]
         if node == end:
             return path
         for i in mygraph.get(node,[]):
             new_path=list(path)
             new_path.append(i)
-            stack.append(new_path)
+            opand.append(new_path)
+        stack = opand + stack
+        opand = []
     return stack
 
 def ucspath(mygraph,mygraph1,start,end):
