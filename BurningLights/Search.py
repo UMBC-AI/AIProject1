@@ -125,9 +125,9 @@ def uniformCostSearch(start, end, edges):
     # Continue as long as the queue isn't empty
     while len(nodeHeap) > 0 and currNode != end:
         # Pop lowest cost node off of queue
-        sortedHeap = sorted(nodeHeap, key=lambda t: costs[t[0]])
+        sortedHeap = sorted(nodeHeap, key=lambda t: costs[t])
         # Get name of first node in sorted heap and remove
-        currNode = sortedHeap[0][0]
+        currNode = sortedHeap[0]
         nodeHeap.remove(currNode)
 
         # Find adjacent nodes
@@ -152,7 +152,7 @@ def uniformCostSearch(start, end, edges):
                     # so update cost to node and parent
                     costs[node[0]] = costToNode
                     parents[node[0]] = currNode
-                if currNode not in nodeHeap:
+                if node[0] not in nodeHeap:
                     # Add node to heap, if not already there
                     nodeHeap.append(node[0])
         
