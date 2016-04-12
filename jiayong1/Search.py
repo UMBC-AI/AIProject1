@@ -2,6 +2,9 @@ import sys
 import copy
 from collections import deque
 
+
+# create a node object, and use link list to connect all of them togethor.
+# Because next nodes of a node is more than one, so we create a array to store them. 
 class node(object):
     name = ""
     nextnode = []
@@ -13,66 +16,78 @@ class node(object):
         self.nextnode = []
         self.weight = []
 
-
+#DFS search
 def DFS(allnodes, allnames, startnode, endnode, outputfilename):
     target = open(outputfilename, 'w')    
     thestart = allnodes[allnames.index(startnode)]
-    theend = allnodes[allnames.index(endnode)]    
-    queue = []
-    queue.append([thestart])
-    while queue:
-        path = queue.pop(len(queue)-1)
+    theend = allnodes[allnames.index(endnode)] 
+    #create an stack, because DFS use LIFO.   
+    stack = []
+    stack.append([thestart])
+    #Loop through the stack until it is empty
+    while stack:
+        # "path" store the final path.
+        path = stack.pop(0)
         thenode = path[-1]
         #if thenode in checked:
             #continue
         #checked.add(thenode)
+        #Found the end node, BREAK.
         if thenode.name == theend.name:
             for i in path:
                 target.write(i.name)
                 target.write("\n")  
-            break       
+            break
+        #Check all the children nodes.        
         for i in thenode.nextnode:
            
             path2 = list(path)
             path2.append(i)
-            queue.append(path2)
+            stack.append(path2)
     target.close()
 
-
+#BFS Search
 def BFS(allnodes, allnames, startnode, endnode, outputfilename):
     target = open(outputfilename, 'w')    
     thestart = allnodes[allnames.index(startnode)]
     theend = allnodes[allnames.index(endnode)]
+    #Create a queue, because BFS is FIFO
     queue = []
     queue.append([thestart])
+    #Loop through the stack until it is empty
     while queue:
+        # "path" store the final path.
         path = queue.pop(0)
         thenode = path[-1]
         #if thenode in checked:
             #continue
         #checked.add(thenode)
+        #Found the end node, BREAK.
         if thenode.name == theend.name:
             for i in path:
                 target.write(i.name)
                 target.write("\n")   
             break      
+        #Check all the children nodes.
         for i in thenode.nextnode:
             path2 = list(path)
             path2.append(i)
             queue.append(path2)
     target.close()
     
-
+#UCS search
 def UCS(allnodes, allnames, startnode, endnode, outputfilename):
+    # open the output file
     target = open(outputfilename, 'w')    
     thestart = allnodes[allnames.index(startnode)]
     theend = allnodes[allnames.index(endnode)]
+    
     checked = []
     ready = []
 
     nodeweight = {}
     nodepath = {}
-     
+    # give all nodes expect start node a very large weight, give start node a 0 weight. 
     for i in allnames:
         if i == startnode:
             nodeweight[i] = 0
@@ -82,20 +97,22 @@ def UCS(allnodes, allnames, startnode, endnode, outputfilename):
             nodepath[i] = []
 
     thenode = thestart
+    # loop until checked all nodes.
     while len(checked) < len(allnames):
         checked.append(thenode.name)
+        # look all the children of the node, update the weight. 
         for i in thenode.nextnode:
             ready.append(i.name)
             edge = thenode.weight[thenode.nextnode.index(i)]
             newweight = edge + nodeweight[thenode.name]
+            # find a smaller weight, and update the path 
             if newweight < nodeweight[i.name]:
                 nodeweight[i.name] = newweight
                 
                 a = copy.deepcopy(nodepath[thenode.name])
                 a.append(i.name)
                 
-                nodepath[i.name] =a 
-               
+                nodepath[i.name] =a        
         for j in ready:
             if j in checked:
                 ready.remove(j)
@@ -104,6 +121,7 @@ def UCS(allnodes, allnames, startnode, endnode, outputfilename):
                 ready.remove(j)
               
                 break
+    # if the path found, write on the output file.            
     if len(nodepath[endnode]) > 0:
     
         for i in nodepath[endnode]:
@@ -120,9 +138,10 @@ def UCS(allnodes, allnames, startnode, endnode, outputfilename):
 
 
 
-
+#main function
 def main():
     try:
+        #get input from command line arguments. 
         inputfilename = sys.argv[1]
         outputfilename = sys.argv[2]
         startnode = sys.argv[3]
@@ -134,7 +153,7 @@ def main():
     
         allnodes = []
         allnames= []
-    
+        #split every line and save in the allnodes and allnames
         for line in inputFile:
             mylist =line.strip().split(' ')   
 
@@ -154,7 +173,8 @@ def main():
 
             node1.nextnode.append(node2)
             node1.weight.append(int(mylist[2]))
-        target = open(outputfilename, 'w')    
+        target = open(outputfilename, 'w')
+        #call function based on user choice.    
         if searchtype == "DFS":
     	    DFS(allnodes, allnames, startnode, endnode, outputfilename)
         
