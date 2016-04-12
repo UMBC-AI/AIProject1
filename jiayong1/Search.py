@@ -20,30 +20,43 @@ class node(object):
 def DFS(allnodes, allnames, startnode, endnode, outputfilename):
     target = open(outputfilename, 'w')    
     thestart = allnodes[allnames.index(startnode)]
-    theend = allnodes[allnames.index(endnode)] 
-    #create an stack, because DFS use LIFO.   
+    theend = allnodes[allnames.index(endnode)]
+    #Create a stack, because BFS is LIFO
     stack = []
     stack.append([thestart])
+    newlist = []
+    checked = []
+
     #Loop through the stack until it is empty
     while stack:
         # "path" store the final path.
-        path = stack.pop(0)
+        path = stack.pop(-1)
         thenode = path[-1]
-        #if thenode in checked:
-            #continue
-        #checked.add(thenode)
-        #Found the end node, BREAK.
-        if thenode.name == theend.name:
-            for i in path:
-                target.write(i.name)
-                target.write("\n")  
-            break
-        #Check all the children nodes.        
-        for i in thenode.nextnode:
+        #if thenode has checked, skip
+        if thenode in checked:
+            continue
+
+        else:
+            checked.append(thenode)
+            #Found the end node, BREAK.
            
-            path2 = list(path)
-            path2.append(i)
-            stack.append(path2)
+            if thenode.name == theend.name:
+                for i in path:
+                    target.write(i.name)
+                    target.write("\n")   
+                break      
+            #Check all the children nodes, if the node does not have children, skip.
+            if not thenode.nextnode:
+                continue
+            del newlist[:]
+            for i in thenode.nextnode:
+                path2 = list(path)
+                path2.append(i)
+                newlist.append(path2)
+            #reverse the list and append to stack
+            newlist.reverse()
+            for j in newlist:
+                stack.append(j)
     target.close()
 
 #BFS Search
