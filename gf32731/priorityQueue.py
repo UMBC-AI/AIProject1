@@ -5,10 +5,10 @@ class PriorityQueue:
     def __init__(self):
         return
 
-    def push(self,element,parent,weight):
-        self.elements.append([element,parent,weight])
+    def put(self,element):
+        self.elements.append(element)
 
-    def pop(self):
+    def get(self):
         topElement = self.elements[0]
         for element in self.elements:
             if element[2] < topElement[2]:
@@ -29,7 +29,7 @@ class PriorityQueue:
     def getWeight(self,element):
         for e in self.elements:
             if e[0] == element:
-                return e[0][1]
+                return e[2]
 
     def getElement(self,element):
         for e in self.elements:
