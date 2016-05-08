@@ -50,7 +50,6 @@ def BFS(startNode, endNode, outputFile):
     while (pathNode != startNode):
         for i in close:
             if i[0] == pathNode:
-                print ("Appending: ", i[1])
                 path.append(i[1])
                 pathNode = i[1]
                     
@@ -94,6 +93,8 @@ def UCS(startNode, endNode, outputFile):
     visited = []
     visitedCost = []
     currentNode = startNode
+
+    currentCost = 0
     numNodes = len(list(myGraph.keys()))
 
     nodes.append(startNode)
@@ -105,10 +106,11 @@ def UCS(startNode, endNode, outputFile):
         if(children):
             i = 0
             while i < (len(children)):
+                newCost = 0
+                newCost = currentCost
+                newCost += (myGraph[currentNode])[children[i]]
                 if (children[i] not in visited):
                     if (children[i] in nodes or children[i] in visited):
-                        newCost = cost[nodes.index(currentNode)]
-                        newCost += (myGraph[currentNode])[children[i]]
                         if (children[i] in nodes):
                             if (newCost < cost[nodes.index(children[i])]):
                                 cost[nodes.index(children[i])] = newCost
@@ -119,18 +121,25 @@ def UCS(startNode, endNode, outputFile):
                                     parents[nodes.index(children[i])] = currentNode
                         else:
                             nodes.append(children[i])
-                            cost.append(cost[nodes.index(currentNode)] + (myGraph[currentNode])[children[i]])
+                            cost.append(newCost)
                             parents.append(currentNode)
+                else:
+                    if (visitedCost[visited.index(children[i])] > newCost):
+                        cost.push(newCost)
+                        nodes.append(children[i])
+                        parents.append(currentNode)
                 i += 1
-                visitedCost.append(cost[nodes.index(currentNode)])
-                cost.remove(cost[nodes.index(currentNode)])
-                parents.remove(parents[nodes.index(currentNode)])
-                nodes.remove(currentNode)
-                visited.append(currentNode)
-                if (cost):
-                    minimum= min(cost)
-                    index = cost.index(minimum)
-                    currentNode = nodes[index]
+                if (currentNode in nodes):
+                    visitedCost.append(cost[nodes.index(currentNode)])
+                    cost.remove(cost[nodes.index(currentNode)])
+                    parents.remove(parents[nodes.index(currentNode)])
+                    nodes.remove(currentNode)
+                    visited.append(currentNode)
+                    if (cost):
+                        minimum= min(cost)
+                        index = cost.index(minimum)
+                        currentNode = nodes[index]
+                        currentCost = nodes[index].value()
         
     path = []
     visited = []
@@ -153,6 +162,8 @@ def UCS(startNode, endNode, outputFile):
     
     backwardsPath = list(reversed(path))
     return backwardsPath
+
+#if you've already been there, don't go there again
 
 def main():
     if(len(sys.argv) != 6):
