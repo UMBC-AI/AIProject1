@@ -7,6 +7,7 @@
 # Section:    02
 
 #!/usr/bin/python
+from __future__ import print_function
 from queue import PriorityQueue
 from collections import deque
 import sys, getopt
@@ -17,32 +18,46 @@ class Vertex(object):
         self.vertex_name = vertexName
         self.cost = vertexCost
 
-# File parsing 
+def printGraph(graph, verticesSet):
+    for key, valueList in graph.items():
+        print("vertex", key, " ", end="to: ")
+        for item in valueList:
+            print(" " ,item.vertex_name, end=":")
+            print(item.cost, end="")
+        print()
+    print("verticesSet", verticesSet)
+    #for i in graph:
+    #   print (i)
+
+     #       , graph[i])
+
+def printAllNodes(nodes):
+    print (nodes)
+
+# File parsing
 def ReadFile(fileName):
 
     graph = {}
-    
+    verticesSet = set()
+
     #open the input file to read
     infile = open(fileName, 'r')
 
     #iteate through the file
     for line in infile:
+        line = line.split()
+        verticesSet.add(line[0])
+        verticesSet.add(line[1])
         key = line[0]
-        value = Vertex(line[2],line[4])
+        value = Vertex(line[1],line[2])
         if key in graph:
             #assign edges of a node
             graph[key].append(value)
+            graph[key] = sorted(graph[key], 
+                key=lambda x: x.vertex_name, reverse=False)
         else:
             graph[key] = [value]
-
-            
-    # for key, valueList in graph.items():
-    #     print("key", key, end=" ")
-    #     for item in valueList:
-    #         print("Value: " ,item.vertex_name, end=":")
-    #        print(item.cost)
-    
-    return graph
+    return graph, verticesSet
 
 # Write to an output file
 def OutputFile(fileName, path):
@@ -73,8 +88,10 @@ def depth_first_search(graph, start, end,fileName):
         try:
             #Ensure that the stack is not empty
             while stack:
+                #print("B------", stack)
                 current_vertex = stack.pop()
-                if(current_vertex not in graph.keys() and current_vertex != end):
+                if(current_vertex not in graph.keys() 
+                    and current_vertex != end):
                     path.pop()
                     current_vertex = stack.pop()
                 path.append(current_vertex)
@@ -84,12 +101,23 @@ def depth_first_search(graph, start, end,fileName):
                     return 0
                 # append to the visited list
                 if current_vertex not in visited:
+                    isNoOutlet = True
                     visited.append(current_vertex)
                     for item in graph[current_vertex]:
-                        stack.append(item.vertex_name)
+                        if (item.vertex_name not in visited and 
+                            item.vertex_name not in stack):
+                            stack.append(item.vertex_name)
+                            isNoOutlet = False
+                    if(isNoOutlet):
+                        path.pop()
+                #print("A------", stack)
+                #print("visited ", visited)
+                #print()
         # path not found
+            OutputFile(fileName,[])
         except:
             OutputFile(fileName,path)
+
 # End DFS
 
 # Begin BFS
@@ -99,7 +127,7 @@ def breadth_first_search(graph, start, end, fileName):
     visited = []
     trace = {}
     queue.append(start)
-    # if thed starting node and the ending node is the same
+    # if the starting node and the ending node is the same
     if (start == end):
         path.append(start)
         OutputFile(fileName,path)
@@ -107,9 +135,11 @@ def breadth_first_search(graph, start, end, fileName):
     else:
         #Ensure the queue is not empty
         while queue:
-            try: 
+            #print("B------- ", queue)
+            try:
                 current_vertex = queue.popleft()
-                if(current_vertex not in graph.keys() and current_vertex != end):
+                if(current_vertex not in graph.keys() 
+                                    and current_vertex != end):
                     current_vertex = queue.popleft()
                 # if the path has been found
                 if current_vertex == end:
@@ -127,15 +157,26 @@ def breadth_first_search(graph, start, end, fileName):
                     for item in graph[current_vertex]:
                         #print("Before:",queue)
                         #print("Item to be appended", item.vertex_name)
-                        flag = item.vertex_name in queue
+                        flag = item.vertex_name in queue or item.vertex_name in visited
                         if not flag:
                             queue.append(item.vertex_name)
                             trace[item.vertex_name] = current_vertex
                 #print(queue)
             #no path has been found
+                #print("Ah------- ", queue)
             except:
                 OutputFile(fileName,path)
-# End DFS
+        if current_vertex == end:
+                    iterator = current_vertex
+                    path.append(iterator)
+                    # Trace back from the current node to the source node
+                    while iterator != start:
+                        iterator = trace[iterator]
+                        path.append(iterator)
+                    path.reverse()
+        OutputFile(fileName,path)
+        #print(">_<", path)
+# End BFS
 
 # Begin UCS
 def uniform_cost_search(graph, start,end,fileName):
@@ -172,7 +213,7 @@ def uniform_cost_search(graph, start,end,fileName):
             # tempQueue = PriorityQueue()
             # tempQueue = pQueue
             for neighbor in graph[current_vertex]:
-                #calculate the cost needed to go from start to 
+                #calculate the cost needed to go from start to
                 temp_cost = distance[current_vertex] + int(neighbor.cost)
                 if temp_cost < distance[neighbor.vertex_name] :
                     distance[neighbor.vertex_name] = temp_cost
@@ -187,7 +228,7 @@ def uniform_cost_search(graph, start,end,fileName):
     #print("iterator:" ,iterator)
     #print("prev[iterator]:",prev[iterator])
     while( (iterator != start) and (prev[iterator] != '')):
-        print(iterator)
+#        print(iterator)
         stack.append(iterator)
         iterator = prev[iterator]
     stack.append(start)
@@ -200,7 +241,7 @@ def uniform_cost_search(graph, start,end,fileName):
 
 
 def main():
-    
+
     map = {}
 
     if len(sys.argv) != 6 :
@@ -214,7 +255,10 @@ def main():
         searchType = str(sys.argv[5])
 
     # file parsing
-    map = ReadFile(inputFile)
+    map, verticesSet = ReadFile(inputFile)
+    #printGraph(map, verticesSet)
+    if(startNode not in verticesSet or endNode not in verticesSet):
+        OutputFile(outputFile,[])
 
     # perform searches
     if searchType == "DFS":
@@ -225,7 +269,7 @@ def main():
         uniform_cost_search(map, startNode, endNode,outputFile)
     else:
         print('Usage: python Search.py <input file> <output file> ', end="")
-        print('<start node> <end node> <search_type>') 
+        print('<start node> <end node> <search_type>')
 
 
 main()
