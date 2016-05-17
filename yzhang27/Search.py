@@ -8,7 +8,7 @@
 #            https://en.wikipedia.org/wiki/Breadth-first_search
 #            https://en.wikipedia.org/wiki/Depth-first_search
 #--------------------------------------------------------------------------
-
+from __future__ import print_function
 from collections import deque
 from heapq import heappush, heappop
 import sys
@@ -62,14 +62,21 @@ def readFile(fileName):
 		node2 = temp[1]
 		cost = int(temp[2])
 		node = [node2, cost]
+		#nodereverse = [node1, cost]
 		if (node1 in graph):
 			graph[node1].append(node)
 		else:
 			graph[node1]=[node]
+		#if(node2 in graph):
+		#	graph[node2].append(nodereverse)
+		#else:
+		#	graph[node2]=[nodereverse]
+
 
 	fin.close()
 
 	for key in graph.keys():
+		graph[key] = sorted(graph[key])
 		if (key not in keeper):
 			keeper.append(key)
 		value = graph.get(key)
@@ -102,11 +109,13 @@ def breadthFirst(source, destination, graph):
 
 	try: 
 		while (queue):
+			#print (queue)
 			current = queue.popleft()
-
+			#print (current)
 			# if destination reached return path
 			if (current == destination):
 				temp = destination
+				i = 0
 				while (temp != source):
 					path.insert(0, temp)
 					temp = BFParent[temp]
@@ -119,12 +128,14 @@ def breadthFirst(source, destination, graph):
 		
 			elif (current not in visited):
 				visited.append(current)
-				for i in graph[current]:
-					if (i[0] not in queue):
+				for i in graph[current]:   #add and i[0] not in visited condition
+					if (i[0] not in queue and i[0] not in visited):
 						queue.append(i[0])
 						BFParent[i[0]] = current
-	except IndexError:
+	except:
 		return path
+
+	return path
 
 # depth first search
 def depthFirst(source, destination, graph):
@@ -140,7 +151,6 @@ def depthFirst(source, destination, graph):
 	while (stack):	
 		current = stack.pop()
 		path.append(current)
-
 		# if the destination node is reached, return path
 		if (current == destination):
 			return path
@@ -152,9 +162,16 @@ def depthFirst(source, destination, graph):
 			path.pop()
 
 		if (current not in visited):
+			isDeadEnd = True
 			visited.append(current)
 			for i in graph[current]:
-				stack.append(i[0])
+				if (i[0] not in visited and i[0] not in stack):
+					stack.append(i[0])
+					isDeadEnd = False
+			if(isDeadEnd):
+				path.pop()
+
+
 		
 # uniform cost search
 def uniformCost(source, destination, graph):
@@ -171,7 +188,7 @@ def uniformCost(source, destination, graph):
 	# initialize the parent of all nodes to an empty string
 	for key in graph.keys():
 		if (key != source and key not in heapNodes):
-			weight[key] = math.inf
+			weight[key] = float("inf")
 			UCParent[key] = ''
 		heappush(heap, ([weight[key]], key))
 		heapNodes.append(key)
@@ -180,7 +197,7 @@ def uniformCost(source, destination, graph):
 			temp = value[i][0]
 			if (temp not in graph.keys() and temp not in heapNodes):
 				if (temp != source):
-					weight[temp] = math.inf
+					weight[temp] = float("inf")
 					UCParent[temp] = ''
 				heappush(heap, ([weight[temp]], temp))
 				heapNodes.append(temp)
@@ -202,12 +219,10 @@ def uniformCost(source, destination, graph):
 	# finds the path from source to destination node then return it
 	tmpNode = destination
 	while (tmpNode != source and UCParent[tmpNode] != ''):
-		print("tmpNode: ", tmpNode)
 		path.insert(0, tmpNode)
 		tmpNode = UCParent[tmpNode]
 	path.insert(0, source)
 
-	print("path: ", path)
 	return path
 
 # main
