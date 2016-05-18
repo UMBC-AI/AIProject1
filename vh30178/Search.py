@@ -43,12 +43,13 @@ def processCommandLineArgs():
 def DFS(graph, start, end):
     #set up the data structures
     visited, stack = [], []
+    pp = []
     last = ""
     #expand start node
     for node in graph:
         if node[0] == start:
             stack.append([node[0], node[1]])
-            
+
     while stack:
         
         node = stack.pop()
@@ -56,27 +57,29 @@ def DFS(graph, start, end):
         if node[0] not in visited:
             visited.append(node[0])
 
+        pp.append([node[0],node[1]])
+
         #if we expand into the end, then end
         if node[1] == end:
             #set up variables to find path
+            
             visited.append(node[1])
             last = node[1]
-            antiloop = node[1]
+            
             path = [last]
-            flag = 1
             #loop through the graph backwards to construct the path
-            #antiloop is there to stop the graph from going back and forth between nodes
-            while flag == 1:
-                for pathnode in graph:
-                    if pathnode[1] == last and pathnode[0] != antiloop:
-                        path.insert(0,pathnode[0])
-                        last = pathnode[0]
-                        antiloop = pathnode[1]
-                        if pathnode[0] == start:
-                            flag = 0
-                            break
+            #antiloop is there to stop the graph from looping
+            for pathnode in reversed(pp):
+                if pathnode[1] == last and pathnode[0] not in path:
+                    path.insert(0,pathnode[0])
+                    last = pathnode[0]
+                    
+                    
+                
+                    
                 
             
+
             return path
         #place next node in stack
         vertex = node[1]
@@ -94,39 +97,41 @@ def DFS(graph, start, end):
 def BFS(graph, start, end):
     #set up data structures
     visited, stack = [], []
+    pp = []
     last = ""
     #expand start node
     for node in graph:
         if node[0] == start:
             stack.append([node[0], node[1]])
             
+
     while stack:
         node = stack.pop(0)
         #mark current position as visited
         if node[0] not in visited:
             visited.append(node[0])
-            
+        
+        pp.append([node[0],node[1]])        
+        
         #if we expand into the end, then end
         if node[1] == end:
             #set up variables to find path
             visited.append(node[1])
             last = node[1]
-            antiloop = node[1]
+            antiloop = [node[1]]
             path = [last]
-            flag = 1
             #loop through the graph backwards to construct the path
             #antiloop is there to stop the graph from going back and forth between nodes
-            while flag == 1:
-                for pathnode in graph:
-                    if pathnode[1] == last and pathnode[0] != antiloop:
-                        path.insert(0,pathnode[0])
-                        last = pathnode[0]
-                        antiloop = pathnode[1]
-                        if pathnode[0] == start:
-                            flag = 0
-                            break
+            for pathnode in reversed(pp):
+                if pathnode[1] == last and pathnode[0] not in antiloop:
+                    path.insert(0,pathnode[0])
+                    antiloop.append(pathnode[0])
+                    last = pathnode[0]
+                    
                 
-            
+                    
+                
+                    
             return path
         #place next node in stack
         vertex = node[1]
@@ -134,6 +139,8 @@ def BFS(graph, start, end):
             for node2 in graph:
                 if node2[0] == vertex:
                     stack.append([node2[0], node2[1]])
+                    
+
     #return empty string if no answer is found    
     if end not in visited:
         return ""
@@ -144,6 +151,7 @@ def BFS(graph, start, end):
 def UCS(graph, start, end):
     #set up data structures
     visited, pqueue = {},[]
+    pp = []
 
     #expand start node
     for node in graph:
@@ -156,24 +164,17 @@ def UCS(graph, start, end):
         #sort the priority queue to find the smallest distance
         sorted(pqueue, key = lambda n:n[2])
         node = pqueue.pop(0)
-
+        pp.append([node[0],node[1]])
         #check for the end
         if node[1] == end:
-            visited[node[1]] = node[2] + visited[node[0]]
             last = node[1]
-            antiloop = node[1]
             path = [last]
-            flag = 1
             #find path
-            while flag == 1:
-                for pathnode in graph:
-                    if pathnode[1] == last and pathnode[0] != antiloop:
-                        path.insert(0,pathnode[0])
-                        last = pathnode[0]
-                        antiloop = pathnode[1]
-                        if pathnode[0] == start:
-                            flag = 0
-                            break
+            for pathnode in reversed(pp):
+                if pathnode[1] == last and pathnode[0] not in path:
+                    path.insert(0,pathnode[0])
+                    last = pathnode[0]
+                    
                 
             
             return path
