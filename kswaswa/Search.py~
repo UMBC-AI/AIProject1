@@ -101,7 +101,11 @@ def UCS(startNode, endNode, outputFile):
     parents.append(0)
     cost.append(0)
 
+    loops = 0
     while (nodes):
+        loops += 1
+        if loops > 100:
+            raise Exception('infinite loop detector')
         children = list(myGraph[currentNode].keys())
         if(children):
             i = 0

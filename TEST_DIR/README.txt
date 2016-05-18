@@ -1,0 +1,1 @@
+I've been finding the path from 1 to 50.  The optimal path, for BFS and UCS, shoudl be extremely short, something like 2 nodes.  Detph first depending on how you implemented typically finds an extremely long path through the graph.
