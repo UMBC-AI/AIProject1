@@ -97,8 +97,8 @@ def uniformCost(graph, start, end):
             if i.name == start.name:
                 distances.append([i.name, 0])
             else:
-                distances.append([i.name, 999999999])
-
+                distances.append([i.name, -1])
+       
         queue.append(start)
         
         while queue:
@@ -108,7 +108,10 @@ def uniformCost(graph, start, end):
             tempDist = 0
             for j in distances:
                 if j[0] == currentNode.name:
-                    tempDist = j[1]
+                    if j[1] == -1:
+                        tempDist = 0
+                    else:
+                        tempDist = j[1]
             if currentNode.name == end:
                 
                 path.append(currentNode.name)
@@ -122,36 +125,21 @@ def uniformCost(graph, start, end):
                 for i in currentNode.edgeList:
                     for j in distances:
                         if j[0] == i.node:
-                            if (i.weight + tempDist) < j[1]:
+                            if (i.weight + tempDist) < j[1] or j[1] == -1:
                                 j[1] = i.weight + tempDist
                                 for k in graph:
                                     if k.name == i.node:
                                         k.searchParent(currentNode)
-            leastDist = -1
-            nextNode = 0
-            for i in distances:
-                if leastDist == -1:
-                    for j in graph:
-                        check = 0
-                        if j.name == i[0]:
-                            for k in visited:
-                                if k == j.name:
-                                    check = 1
-                            if check == 0:
-                                nextNode = j
-                                leastDist = i[1]
-                else:
-                    if i[1] < leastDist:
-                        for j in graph:
-                            if j.name == i[0]:
-                                for k in visited:
-                                    if k == j.name:
-                                        check = 1
-                                if check == 0:
-                                    nextNode = j
-                                    leastDist = i[1]
-            if not nextNode == 0 and not leastDist == 999999999:
-                queue.append(nextNode)
+            
+
+            for i in currentNode.edgeList:
+                for j in graph:
+                    if j.name == i.node:
+                        if not j.name in visited:
+                            queue.append(j)
+                            
+                            
+
     return ''               
             
             
