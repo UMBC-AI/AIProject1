@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[131]:
+# In[23]:
 
 class Graph:
     
@@ -28,7 +28,7 @@ class Graph:
         
 
 
-# In[187]:
+# In[37]:
 
 def GetPath(graph,start,end,visited):
     
@@ -42,11 +42,11 @@ def GetPath(graph,start,end,visited):
         if(path[count] in node):
             path.append(visited[x])
             count+=1
-                    
+    
     return list(reversed(path))
 
 
-# In[234]:
+# In[38]:
 
 def BFS(graph, start, end):
     
@@ -79,7 +79,7 @@ def BFS(graph, start, end):
                 
 
 
-# In[232]:
+# In[39]:
 
 def DFS(graph, start, end):
     
@@ -100,7 +100,6 @@ def DFS(graph, start, end):
                 if(adjacent not in visited):
                     
                     stack.insert(0,adjacent)
-
         else:
             
             #if end node matches given end node get path
@@ -111,13 +110,7 @@ def DFS(graph, start, end):
     return ""
 
 
-# In[197]:
-
-
-    
-
-
-# In[236]:
+# In[46]:
 
 def main():
     
@@ -126,21 +119,21 @@ def main():
     startNode=sys.argv[3]
     endNode=sys.argv[4]
     searchType=sys.argv[5]
-
+    
     graph=Graph()
-    file=open(inputFile, "r")
+    file=open(inputFile, 'r')
     
     
     for line in file:
-        
-        splitLine=line.split(" ")
-        graph.addnode(splitLine[0], splitLine[1], splitLine[2].strip())
+        line=line.strip('\n')
+        line=line.split()
+        graph.addnode(line[0], line[1], line[2])
         
     file.close()
     
     if(searchType=="DFS"):
         
-         solution=DFS(graph,startNode,endNode)
+        solution=DFS(graph,startNode,endNode)
         
     elif(searchType=="BFS"):
         
@@ -154,25 +147,18 @@ def main():
         
         print ("Not a valid search type.")
     
-    
     file=open(outputFile, "w")
     
     for line in solution:
-        
         file.write(line)
         file.write("\n")
         
     file.close()
 
 
-# In[238]:
+# In[47]:
 
 import sys
 
 main()
-
-
-# In[ ]:
-
-
 
